@@ -1,0 +1,4 @@
+-¿Por qué es importante reutilizar bloques de UI en lugar de duplicar código?
+-¿Qué ocurre si giras el dispositivo estando en la ficha de una receta? ¿Se pierde el estado? ¿Por qué?
+-¿Cómo se aplica UDF en este proyecto? Identifica los tres niveles: ViewModel, pantalla y bloques reutilizables.
+-¿por qué aquí el texto se guarda con rememberSaveable y no en el ViewModel?¿Qué cambiaría si estuviera en el ViewModel?
