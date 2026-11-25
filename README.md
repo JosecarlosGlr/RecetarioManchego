@@ -35,7 +35,6 @@ com.example.recetariomanchego/
 | # | Prueba realizada | Resultado esperado | Estado | Indicador |
 |---|---|---|---|---|
 | 1 | Pulsar una tarjeta en la lista | La tarjeta cambia de color con animación (`animateColorAsState`) y despliega suavemente (`AnimatedVisibility`) la comarca y el botón *"Ver receta completa"*. | Correcto | 3.f.1, 3.f.2 |
-| 11 | Activar el chip *"Solo favoritas"* junto con una dificultad (ej. *Media*) y escribir en el buscador | Filtra acumulando las tres condiciones a la vez; si no hay coincidencias, muestra el aviso y el botón *"Limpiar filtros"* reinicia todo. | Correcto | Mejora 3 |
 | 2 | Pulsar otra tarjeta estando una abierta | La primera tarjeta se cierra y se abre solo la nueva. | Correcto | 2.g.1 |
 | 3 | Pulsar el botón *"Ver receta completa"* | Abre `FichaRecetaScreen` mostrando los datos de esa receta. | Correcto | 2.g.1 |
 | 4 | Pulsar la flecha de volver (o gesto atrás) en la ficha | Vuelve a la lista y la tarjeta que habíamos abierto sigue desplegada. | Correcto | 2.g.1 |
@@ -45,6 +44,7 @@ com.example.recetariomanchego/
 | 8 | Activar el modo oscuro (*Dark theme*) del emulador | Toda la app se adapta usando `MaterialTheme.colorScheme` sin textos ni iconos que no se lean bien. | Correcto | 2.b.4 |
 | 9 | Pulsar el corazón de favorita en la tarjeta y en la barra superior de la ficha | Cambia de icono y de color animado sin abrir ni cerrar la tarjeta, se sincroniza entre lista y ficha y aguanta al girar. | Correcto | Mejora 1 |
 | 10 | Escribir `"mig"` o `"MIG"` en el buscador y pulsar el botón `X` | Filtra sin importar mayúsculas dejando solo *"Migas ruleras"*, mantiene el texto al girar y el botón `X` borra la búsqueda. | Correcto | Mejora 2 |
+| 11 | Activar el chip *"Solo favoritas"* junto con una dificultad (ej. *Media*) y escribir en el buscador | Filtra acumulando las tres condiciones a la vez; si no hay coincidencias, muestra el aviso y el botón *"Limpiar filtros"* reinicia todo. | Correcto | Mejora 3 |
 
 ---
 
