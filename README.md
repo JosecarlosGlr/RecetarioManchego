@@ -11,6 +11,7 @@ Aplicación Android desarrollada en **Kotlin** y **Jetpack Compose** (Material D
 * **Recetas favoritas (Mejora 1):** Icono de corazón animado tanto en cada tarjeta como en la barra superior de la ficha, sincronizado en tiempo real y persistente ante giros de pantalla.
 * **Buscador por nombre (Mejora 2):** Filtro en tiempo real que no distingue mayúsculas de minúsculas, con botón para limpiar el texto y conservación del filtro al girar o volver de una ficha.
 * **Multiidioma y tema adaptable:** Interfaz traducida al español (por defecto) e inglés (`values-en`), compatible con modo claro y oscuro mediante `MaterialTheme.colorScheme`.
+* **Filtros combinados (Mejora 3):** Barra horizontal de `FilterChip` debajo del buscador que permite filtrar por *"Solo favoritas"* y por nivel de dificultad (*Fácil*, *Media*, *Alta*) acumulándose con el texto buscado, además de un botón rápido para limpiar los filtros si no hay coincidencias.
 
 ## Arquitectura y estructura del proyecto
 
@@ -22,7 +23,7 @@ com.example.recetariomanchego/
 │   └── RecetasData.kt         # Listado inicial de 10 recetas manchegas
 ├── ui/
 │   ├── RecetasViewModel.kt    # Estado compartido (recetas, favoritas, tarjeta expandida)
-│   ├── ComponentesReceta.kt   # Bloques reutilizables (foto, resumen, ingredientes, pasos, tarjeta y corazón)
+│   ├── ComponentesReceta.kt   # Bloques reutilizables (foto, resumen, ingredientes, pasos, tarjeta, corazón y barra de filtros)
 │   ├── PantallasReceta.kt     # ListaRecetasScreen (con buscador) y FichaRecetaScreen (adaptativa)
 │   └── theme/                 # Tema, colores y tipografías de Material 3
 └── MainActivity.kt            # Punto de entrada y navegación con NavHost
@@ -34,6 +35,7 @@ com.example.recetariomanchego/
 | # | Prueba realizada | Resultado esperado | Estado | Indicador |
 |---|---|---|---|---|
 | 1 | Pulsar una tarjeta en la lista | La tarjeta cambia de color con animación (`animateColorAsState`) y despliega suavemente (`AnimatedVisibility`) la comarca y el botón *"Ver receta completa"*. | Correcto | 3.f.1, 3.f.2 |
+| 11 | Activar el chip *"Solo favoritas"* junto con una dificultad (ej. *Media*) y escribir en el buscador | Filtra acumulando las tres condiciones a la vez; si no hay coincidencias, muestra el aviso y el botón *"Limpiar filtros"* reinicia todo. | Correcto | Mejora 3 |
 | 2 | Pulsar otra tarjeta estando una abierta | La primera tarjeta se cierra y se abre solo la nueva. | Correcto | 2.g.1 |
 | 3 | Pulsar el botón *"Ver receta completa"* | Abre `FichaRecetaScreen` mostrando los datos de esa receta. | Correcto | 2.g.1 |
 | 4 | Pulsar la flecha de volver (o gesto atrás) en la ficha | Vuelve a la lista y la tarjeta que habíamos abierto sigue desplegada. | Correcto | 2.g.1 |
@@ -70,9 +72,9 @@ Si escribimos algo en el buscador, entramos a ver una receta y luego volvemos at
 | :---: | :---: |
 | <img src="capturas/image1.png" width="250" alt="Lista con tarjeta expandida"/> | <img src="capturas/image4.png" width="250" alt="Ficha de receta en vertical"/> |
 
-| Interfaz en inglés |  |
+| Interfaz en inglés | Filtro expandido |
 | :---: | :---: |
-| <img src="capturas/image4.png" width="250" alt="Interfaz traducida al inglés"/> | <img src="capturas/.png" width="250" alt="Buscador filtrando recetas"/> |
+| <img src="capturas/image4.png" width="250" alt="Interfaz traducida al inglés"/> | <img src="capturas/image5.png" width="250" alt="Buscador filtrando recetas"/> |
 
 ### Disposición adaptativa en horizontal
 
