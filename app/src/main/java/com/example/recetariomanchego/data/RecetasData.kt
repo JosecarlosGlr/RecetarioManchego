@@ -2,11 +2,16 @@ package com.example.recetariomanchego.data
 
 import com.example.recetariomanchego.R
 
+// Aquí guardamos las 10 recetas iniciales para que el ViewModel tenga datos nada más arrancar la app.
+// Cada receta lleva un id único (del 1 al 10) porque luego lo usamos como key en la LazyColumn
+// y para identificar qué plato abrir al navegar a la ficha (ficha/{id}).
+// El campo 'favorita' no lo ponemos aquí porque en la data class Receta ya viene por defecto a false.
 fun recetasIniciales(): List<Receta> = listOf(
     Receta(
         id = 1,
         nombre = "Migas ruleras",
         tiempoMinutos = 45,
+        // Usamos el enum Dificultad en lugar de texto suelto para facilitar los filtros y la traducción
         dificultad = Dificultad.MEDIA,
         comarca = "La Mancha",
         ingredientes = listOf("pan de migas", "ajo", "chorizo", "pimentón", "aceite de oliva", "uvas"),
@@ -16,6 +21,7 @@ fun recetasIniciales(): List<Receta> = listOf(
             "Incorpora las migas y remueve a fuego medio hasta que queden sueltas y doradas.",
             "Sirve con uvas o con sardinas, según la tradición de cada pueblo."
         ),
+        // Apuntamos directamente al recurso de imagen guardado en res/drawable
         imagenId = R.drawable.receta_migas_ruleras
     ),
     Receta(

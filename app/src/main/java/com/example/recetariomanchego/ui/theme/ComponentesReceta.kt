@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,14 +18,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,17 +46,80 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recetariomanchego.R
+import com.example.recetariomanchego.data.Dificultad
 import com.example.recetariomanchego.data.Receta
 import com.example.recetariomanchego.data.recetasIniciales
 import com.example.recetariomanchego.ui.theme.RecetarioManchegoTheme
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.IconButton
+
+// Todos los componentes de este archivo son stateless (sin estado propio):
+// reciben los datos ya preparados y avisan hacia arriba con lambdas cuando el usuario pulsa algo.
+
+@Composable
+fun BarraFiltrosRecetas(
+    soloFavoritas: Boolean,
+    onCambiarSoloFavoritas: (Boolean) -> Unit,
+    dificultadSeleccionada: Dificultad?,
+    onSeleccionarDificultad: (Dificultad?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    // Usamos LazyRow para que los chips se puedan deslizar en horizontal si la pantalla es estrecha
+    // o si los textos ocupan más al cambiar el móvil a inglés
+    LazyRow(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Chip para filtrar solo las recetas marcadas como favoritas
+        item {
+            FilterChip(
+                selected = soloFavoritas,
+                onClick = { onCambiarSoloFavoritas(!soloFavoritas) },
+                label = { Text(stringResource(R.string.filtro_solo_favoritas)) },
+                leadingIcon = if (soloFavoritas) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier.size(FilterChipDefaults.IconSize)
+                        )
+                    }
+                } else null
+            )
+        }
+
+        // Generamos un chip por cada nivel del enum Dificultad (Fácil, Media, Difícil)
+        items(Dificultad.entries) { dificultad ->
+            val seleccionada = dificultadSeleccionada == dificultad
+            FilterChip(
+                selected = seleccionada,
+                onClick = {
+                    // Si volvemos a pulsar la dificultad que ya estaba marcada, la desactivamos (null)
+                    onSeleccionarDificultad(if (seleccionada) null else dificultad)
+                },
+                label = {
+                    Text(stringResource(dificultad.etiquetaRes))
+                },
+                leadingIcon = if (seleccionada) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(FilterChipDefaults.IconSize)
+                        )
+                    }
+                } else null
+            )
+        }
+    }
+}
+
 @Composable
 fun BloqueFoto(
     receta: Receta,
     modifier: Modifier = Modifier
 ) {
+    // Bloque reutilizable para la foto: se usa tanto en pequeño en la tarjeta
+    // como en grande en las disposiciones vertical y horizontal de la ficha
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
@@ -57,6 +128,7 @@ fun BloqueFoto(
         Image(
             painter = painterResource(id = receta.imagenId),
             contentDescription = stringResource(R.string.cd_foto_receta, receta.nombre),
+            // ContentScale.Crop recorta lo que sobre para rellenar el hueco sin deformar la foto
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
@@ -68,6 +140,7 @@ fun BloqueResumen(
     receta: Receta,
     modifier: Modifier = Modifier
 ) {
+    // Muestra en una línea el tiempo, la dificultad traducida y la comarca
     Text(
         text = stringResource(
             R.string.resumen_receta,
@@ -94,6 +167,7 @@ fun BloqueIngredientes(
             text = stringResource(R.string.titulo_ingredientes),
             style = MaterialTheme.typography.titleMedium
         )
+        // Pintamos cada ingrediente con un icono de verificación delante
         ingredientes.forEach { ingrediente ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -127,6 +201,7 @@ fun BloquePasos(
             text = stringResource(R.string.titulo_elaboracion),
             style = MaterialTheme.typography.titleMedium
         )
+        // Usamos forEachIndexed para numerar los pasos automáticamente (index + 1) dentro de un círculo
         pasos.forEachIndexed { index, paso ->
             Row(
                 verticalAlignment = Alignment.Top,
@@ -164,6 +239,7 @@ fun TarjetaReceta(
     onVerFicha: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Animamos el cambio de color de fondo cuando la tarjeta pasa de cerrada a expandida
     val colorTarjeta by animateColorAsState(
         targetValue = if (expandida) {
             MaterialTheme.colorScheme.secondaryContainer
@@ -209,6 +285,7 @@ fun TarjetaReceta(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                // Al ser un IconButton independiente, captura su propio clic sin abrir ni cerrar la tarjeta
                 BotonFavorita(
                     favorita = receta.favorita,
                     onAlternarFavorita = onAlternarFavorita
@@ -216,6 +293,7 @@ fun TarjetaReceta(
             }
         }
 
+        // Despliega suavemente la comarca y el botón de acceso cuando expandida es true
         AnimatedVisibility(
             visible = expandida,
             enter = expandVertically(),
@@ -242,6 +320,7 @@ fun TarjetaReceta(
     }
 }
 
+// Previews múltiples para comprobar rápido en Android Studio el tema claro, oscuro y la traducción al inglés
 @Preview(showBackground = true, name = "Claro")
 @Preview(
     showBackground = true,
@@ -272,6 +351,7 @@ fun BotonFavorita(
     onAlternarFavorita: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Reutilizamos este botón tanto en TarjetaReceta como en la TopAppBar de FichaRecetaScreen
     val colorCorazon by animateColorAsState(
         targetValue = if (favorita) {
             MaterialTheme.colorScheme.primary
@@ -287,6 +367,7 @@ fun BotonFavorita(
     ) {
         Icon(
             imageVector = if (favorita) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            // Cambiamos la descripción accesible según el estado actual para lectores de pantalla
             contentDescription = stringResource(
                 if (favorita) R.string.cd_quitar_favorita else R.string.cd_marcar_favorita
             ),

@@ -18,4 +18,7 @@
     <string name="buscar_receta">Search recipe</string>
     <string name="cd_borrar_busqueda">Clear search</string>
     <string name="sin_resultados_busqueda">No recipes found matching that name.</string>
+    <string name="filtro_solo_favoritas">Favorites only</string>
+    <string name="filtro_limpiar">Clear filters</string>
+    <string name="lista_sin_resultados">No recipes match the selected filters.</string>
 </resources>
